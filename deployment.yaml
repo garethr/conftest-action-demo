@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-kubernetes
+  labels:
+    app.kubernetes.io/name: mysql
+    app.kubernetes.io/instance: mysql-1
+    app.kubernetes.io/version: "5.7.21"
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: wordpress
+    app.kubernetes.io/managed-by: helm
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hello-kubernetes
+  template:
+    metadata:
+      labels:
+        app: hello-kubernetes
+    spec:
+      volumes:
+        - name: dockersock
+          hostPath:
+            path: /var/run/docker.sock
+      hostNetwork: true
+      containers:
+      - name: hello-kubernetes1
+        image: paulbouwer/hello-kubernetes:1.5
+        ports:
+        - containerPort: 8080
+          #        resources:
+          #limits:
+          #  cpu: 1
+      - name: hello-kubernetes2
+        image: paulbouwer/hello-kubernetes:1.5
+        ports:
+        - containerPort: 8081
+        securityContext:
+          runAsUser: 1000
+          capabilities:
+            drop:
+              - all
+            add:
+              - CAP_SYS_ADMIN
