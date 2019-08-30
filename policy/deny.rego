@@ -95,6 +95,6 @@ deny[msg] {
 # https://kubesec.io/basics/spec-volumes-hostpath-path-var-run-docker-sock/
 deny[msg] {
 	kubernetes.volumes[volume]
-	not volume.hostpath.path = "/var/run/docker.sock"
+	volume.hostpath.path = "/var/run/docker.sock"
 	msg = sprintf("The %s %s is mounting the Docker socket", [kubernetes.kind, kubernetes.name])
 }
